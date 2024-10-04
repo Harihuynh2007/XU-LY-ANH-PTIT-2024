@@ -1,0 +1,13 @@
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 100, High Threshold: 86
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 53, High Threshold: 86
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 2, Low Threshold: 100, High Threshold: 200
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 53, High Threshold: 86
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 53, High Threshold: 86
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 53, High Threshold: 173
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 113, High Threshold: 218
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 0, Low Threshold: 113, High Threshold: 218
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 0, Low Threshold: 206, High Threshold: 26
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 206, High Threshold: 26
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 116, High Threshold: 158
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 71, High Threshold: 165
+Image: C:\Users\Admin\XU-LY-ANH-PTIT-2024\data\ChessSet.jpg, Objects: 3, Low Threshold: 71, High Threshold: 165

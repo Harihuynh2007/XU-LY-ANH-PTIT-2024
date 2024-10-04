@@ -1,50 +1,67 @@
-# src/image_processing.py
+# image_processing.py
 import cv2
-from image_utils import read_image, convert_to_grayscale, apply_gaussian_blur, apply_adaptive_threshold, apply_morphology, find_and_count_contours, draw_contours, save_image
+import numpy as np
+from matplotlib import pyplot as plt
 
-def main():
-    # Đường dẫn tới ảnh quân cờ
-    image_path = 'data/ChessSet.jpg'
-    
+# Ghi log thông tin vào thư mục chỉ định
+def log_info(image_path, object_count, low_threshold, high_threshold):
+    log_path = "C:\\Users\\Admin\\XU-LY-ANH-PTIT-2024\\notebook\\log.txt"
+    with open(log_path, "a") as log_file:
+        log_file.write(f"Image: {image_path}, Objects: {object_count}, Low Threshold: {low_threshold}, High Threshold: {high_threshold}\n")
+    print(f"Thông tin đã được ghi vào {log_path}")
+
+# Xử lý ảnh và đếm đối tượng
+def process_image(image_path, low_threshold, high_threshold):
     # Đọc ảnh
-    image = read_image(image_path)
-    if image is None:
-        return
+    image = cv2.imread(image_path)
+
+    # Chọn vùng ROI
+    roi = cv2.selectROI("Select ROI", image, fromCenter=False, showCrosshair=True)
+    cv2.destroyWindow("Select ROI")
     
-    # Hiển thị ảnh gốc
-    cv2.imshow('Ảnh gốc', image)
-    cv2.waitKey(0)
+    # Cắt ảnh theo vùng ROI
+    roi_image = image[int(roi[1]):int(roi[1]+roi[3]), int(roi[0]):int(roi[0]+roi[2])]
 
-    # 1. Chuyển đổi ảnh sang màu xám
-    gray_image = convert_to_grayscale(image)
+    # Chuyển ảnh ROI sang thang độ xám
+    gray_image = cv2.cvtColor(roi_image, cv2.COLOR_BGR2GRAY)
 
-    # 2. Làm mờ ảnh để giảm nhiễu
-    blurred_image = apply_gaussian_blur(gray_image)
+    # Làm mờ ảnh để giảm nhiễu
+    blurred_image = cv2.GaussianBlur(gray_image, (7, 7), 0)
 
-    # 3. Áp dụng ngưỡng thích ứng (Adaptive Thresholding)
-    block_size = 11  # Điều chỉnh giá trị này để tối ưu kết quả
-    C = 2  # Điều chỉnh giá trị này để tối ưu kết quả
-    adaptive_threshold_image = apply_adaptive_threshold(blurred_image, block_size=block_size, C=C)
-    
-    # 4. Áp dụng phép toán hình thái học (Morphology) để loại bỏ nhiễu
-    morph_image = apply_morphology(adaptive_threshold_image)
+    # Áp dụng ngưỡng màu
+    _, threshold_image = cv2.threshold(blurred_image, 127, 255, cv2.THRESH_BINARY)
 
-    # 5. Tìm và đếm các đường viền, với diện tích tối thiểu để lọc nhiễu
-    min_area = 500  # Điều chỉnh giá trị này để lọc nhiễu
-    contours, num_objects = find_and_count_contours(morph_image, min_area=min_area)
-    print(f"Số lượng đối tượng được phát hiện (min_area = {min_area}): {num_objects}")
+    # Phát hiện cạnh sử dụng Canny với ngưỡng điều chỉnh từ giao diện
+    edges = cv2.Canny(threshold_image, low_threshold, high_threshold)
 
-    # 6. Vẽ đường viền quanh các đối tượng
-    image_with_contours = draw_contours(image, contours)
-    cv2.imshow('Ảnh với đường viền quanh đối tượng', image_with_contours)
-    cv2.waitKey(0)
+    # Tìm đường bao (contours)
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # 7. Lưu ảnh đã xử lý
-    output_path = '/mnt/data/output_image.jpg'
-    save_image(image_with_contours, output_path)
+    # Lọc các contours dựa trên kích thước để loại bỏ những contours quá nhỏ
+    min_contour_area = 200  # Ngưỡng diện tích tối thiểu cho contour để được tính
+    filtered_contours = [cnt for cnt in contours if cv2.contourArea(cnt) > min_contour_area]
 
-    # Đóng tất cả các cửa sổ hiển thị
-    cv2.destroyAllWindows()
+    # Đếm số lượng đối tượng sau khi lọc
+    object_count = len(filtered_contours)
 
-if __name__ == "__main__":
-    main()
+    # Vẽ đường bao lên ảnh gốc ROI
+    cv2.drawContours(roi_image, filtered_contours, -1, (0, 255, 0), 2)
+
+    # Hiển thị kết quả
+    print(f"Số lượng đối tượng trong ảnh: {object_count}")
+    plt.figure(figsize=(10, 5))
+
+    # Hiển thị ảnh gốc với đường bao
+    plt.subplot(1, 2, 1)
+    plt.title("Original ROI Image with Contours")
+    plt.imshow(cv2.cvtColor(roi_image, cv2.COLOR_BGR2RGB))
+
+    # Hiển thị ảnh sau khi áp dụng Canny
+    plt.subplot(1, 2, 2)
+    plt.title("Edge Detected Image")
+    plt.imshow(edges, cmap='gray')
+
+    plt.show()
+
+    # Ghi log thông tin
+    log_info(image_path, object_count, low_threshold, high_threshold)
